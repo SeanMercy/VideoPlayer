@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <title>Title</title>
+</head>
+<body>
+<link href="/css/videoPlayer.css" rel="stylesheet" type="text/css">
+<script src="/lib/art-template/lib/template-web.js"></script>
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    ~(function () {
+        let clinW = document.documentElement.clientWidth;
+        document.documentElement.style.fontSize = clinW / 360 * 100 + "px";
+    })();
+</script>
+<div tabindex="-1" data-setup="{}" poster="http://vjs.zencdn.net/v/oceans.png" preload="none" class="video-js vjs-default-skin example_video_1-dimensions vjs-controls-enabled vjs-workinghover vjs-has-started vjs-paused vjs-ended vjs-user-inactive" id="example_video_1" role="region" aria-label="video player">
+    <video id="videoBox"  preload="auto" class="vjs-tech" width="800" height="600"  >
+    <source src="/assets/123.mp4" type="video/mp4" />
+    </video>
+    <div class="vjs-control-bar" dir="ltr" role="group">
+        <button class="vjs-play-control vjs-control vjs-button vjs-paused" type="button" aria-live="polite" title="Play" aria-disabled="false"><span class="vjs-control-text">Play</span></button>
+        <div class="voice">
+            <div class="voiceImg"></div>
+            <div id="progressVoice">
+                <div id="playVoice">
+                </div>
+                <div id="circle"></div>
+            </div>
+        </div>
+        <div id="videoControls">
+         <div class="timeTag">
+         <div class="curTime">0:00</div><span>/</span>
+         <div class="duration"></div>
+         </div>
+            <div id="progressWrap">
+                <div id="playProgress">
+                </div>
+                <div id="bt"></div>
+            </div>
+         <div class="countDown"></div>
+         <button id="fullScreenBtn" title="FullScreen Toggle"></button>
+        </div>
+    </div>
+</div>
+<script>
+    (function(window, document) {
+        var video1 = document.getElementById('videoBox');
+        var video = $('#videoBox');
+        var playBtn = $('.vjs-play-control');
+        var videoControls = $('#videoControls');
+        var fullScreenBtn = $('#fullScreenBtn');
+        var progressWrap = $('#progressWrap');
+        var playProgress = $('#playProgress');
+        var $bt = $('#bt');
+        var $voiceImg = $('.voiceImg');
+        var progressVoice = $('#progressVoice');
+        var playVoice = $('#playVoice');
+        var $circle = $('#circle');
+        var fullScreenFlag = false;
+        var ox = 0,lefts = 0,left = 0,lx = 0;
+        var bgLeft;
+        var progressFlag;
+        var status = false,voiceStatus = false;
+        var videoPlayer = {
+            init:function () {
+                video.on("loadeddata",function () {
+                    videoPlayer.initControls();
+                    $('.duration').html(timeStamp(video1.duration))
+                    $('.countDown').html("-"+timeStamp(video1.duration-video1.currentTime))
+                });
+                videoPlayer.operateControls();
+            },
+            initControls: function(){
+                videoPlayer.showHideControls();
+            },
+            showHideControls: function(){
+                videoControls.on("mouseover",function () {
+                    showControls();
+                });
+//                videoControls.on("mouseout",function () {
+//                    hideControls();
+//                })
+              },
+            operateControls: function(){
+                playBtn.on("click",function () {
+                    playVideo();
+                });
+                fullScreenBtn.on("click",function () {
+                    IsfullScreen();
+                });
+//                progressWrap.on("mousedown",function () {
+//                    videoSeek(window.event);
+//                })
+                progressWrap.get(0).addEventListener("touchstart",function (e) {
+                    videoSeek(e);
+                })
+                $bt.each(function () {
+                    var _this = this;
+                    bgLeft = $(_this).parent().width();
+//                    $(_this).mousedown(function(e) {
+//                        e.stopPropagation();
+//                        ox = e.touches[0].clientX  - lefts;
+//                        console.log(ox)
+//                        status = true;
+//                    });
+                    $(_this).get(0).addEventListener("touchstart",(function(e) {
+                        e.stopPropagation();
+                        ox = e.touches[0].clientX  - lefts;
+                        console.log(ox)
+                        status = true;
+                    }));
+//                    $(document).mouseup(function(e) {
+//                        if (status && video1) {
+//                            var MAX_WIDTH = bgLeft;
+//                            var curtime = video1.currentTime;
+//                            var duration = video1.duration;
+//                            var seekTime = duration * (lefts/MAX_WIDTH)|| 0;//获取点击的当前毫秒数
+//                            video1.currentTime = seekTime;
+//                            progressFlag = setInterval(getProgress, 60);
+//                        }
+//                        status = false;
+//                    });
+                    $(_this).get(0).addEventListener("touchend",(function(e) {
+                        if (status && video1) {
+                            var MAX_WIDTH = bgLeft;
+                            var curtime = video1.currentTime;
+                            var duration = video1.duration;
+                            var seekTime = duration * (lefts/MAX_WIDTH)|| 0;//获取点击的当前毫秒数
+                            video1.currentTime = seekTime;
+                            progressFlag = setInterval(getProgress, 60);
+                        }
+                        status = false;
+                    }));
+//                    progressWrap.mousemove(function(e) {//鼠标移动
+//                        if (status) {
+//                            lefts = e.touches[0].clientX  - ox;
+//                            if (lefts <= 0) {
+//                                lefts = 0;
+//                            }else if (lefts > bgLeft) {
+//                                lefts = bgLeft;
+//                            }
+//                            console.log(lefts)
+//                            var MAX_WIDTH = bgLeft;
+//                            var curtime = video1.currentTime;
+//                            var duration = video1.duration;
+//                            var percent = lefts/MAX_WIDTH;
+//                            var seekTime = duration * (lefts/MAX_WIDTH)|| 0;//获取点击的当前毫秒数
+//                            video1.currentTime = seekTime;
+//                            playProgress.css('width',percent * (progressWrap.get(0).offsetWidth)+ "px");
+//                            $(_this).css('left',percent * (progressWrap.get(0).offsetWidth)+ "px");
+//                        }
+//                    });
+                    $(_this).get(0).addEventListener("touchmove",(function(e) {
+                        if (status) {
+                            lefts = e.touches[0].clientX  - ox;
+                            if (lefts <= 0) {
+                                lefts = 0;
+                            }else if (lefts > bgLeft) {
+                                lefts = bgLeft;
+                            }
+                            console.log(lefts)
+                            var MAX_WIDTH = bgLeft;
+                            var curtime = video1.currentTime;
+                            var duration = video1.duration;
+                            var percent = lefts/MAX_WIDTH;
+                            var seekTime = duration * (lefts/MAX_WIDTH)|| 0;//获取点击的当前毫秒数
+                            video1.currentTime = seekTime;
+                            playProgress.css('width',percent * (progressWrap.get(0).offsetWidth)+ "px");
+                            $(_this).css('left',percent * (progressWrap.get(0).offsetWidth)+ "px");
+                        }
+                    }),false);
+                })
+            }
+        }
+        videoPlayer.init();
+        progressVoice.get(0).addEventListener("touchstart",function (e) {
+            console.log(1111)
+            enhanceVoiceSeek(e);
+        })
+        $circle.each(function () {
+            var _this = this;
+            var voiceLen = $(_this).parent().width();
+            var proLength = playVoice.width();
+            if(proLength == 0){
+                $voiceImg.addClass('noVoice')
+            }
+
+            /**
+             *
+             * 移动端 视频播放器拖动进度条事件
+             */
+            $circle.get(0).addEventListener("touchstart",function(e) {
+                e.stopPropagation();
+                lx = e.touches[0].clientX  - left;
+                voiceStatus = true;
+            });
+            $circle.get(0).addEventListener("touchmove",function(e) {
+                if (video1 && voiceStatus) {
+                    var value = (left/voiceLen)|| 0;//获取当前音量百分比
+                    video1.volume = value;
+                }
+            },false);
+            $circle.get(0).addEventListener("touchend",function(e) {
+                if (voiceStatus) {
+                    left = e.touches[0].clientX - lx;
+                    if (left <= 0) {
+                        left = 0;
+                    }else if (left > voiceLen) {
+                        left = voiceLen;
+                    }
+                    var MAX_WIDTH = voiceLen;
+                    var value = left/MAX_WIDTH;
+                    video1.volume = value;
+                    proLength = left;
+                    playVoice.css('width',value * (progressVoice.get(0).offsetWidth)+ "px");
+                    $(_this).css('left',value * (progressVoice.get(0).offsetWidth)+ "px");
+                    if(proLength == 0){
+                        if($voiceImg.hasClass('noVoice')) return;
+                        $voiceImg.removeClass('lowVoice').removeClass('highVoice').addClass('noVoice');
+                    }else if(proLength == voiceLen){
+                        if($voiceImg.hasClass('highVoice')) return;
+                        $voiceImg.removeClass('noVoice').removeClass('lowVoice').addClass('highVoice');
+                    }else{
+                        if($voiceImg.hasClass('lowVoice')) return;
+                        $voiceImg.removeClass('noVoice').removeClass('highVoice').addClass('lowVoice');
+                    }
+                }
+                voiceStatus = false;
+            });
+
+            /**
+             *
+             * PC 视频播放器拖动进度条事件
+             */
+//            $circle.mousedown(function(e) {
+//                e.stopPropagation();
+//                lx = e.pageX - left;
+//                voiceStatus = true;
+//            });
+//            $(document).mouseup(function(e) {
+//                if (video1) {
+//                    var value = (left/voiceLen)|| 0;//获取当前音量百分比
+//                    video1.volume = value;
+//                }
+//                voiceStatus = false;
+//            });
+//            progressVoice.mousemove(function(e) {//鼠标移动
+//                if (voiceStatus) {
+//                    left = e.pageX - lx;
+//                    if (left <= 0) {
+//                        left = 0;
+//                    }else if (left > voiceLen) {
+//                        left = voiceLen;
+//                    }
+//                    var MAX_WIDTH = voiceLen;
+//                    var value = left/MAX_WIDTH;
+//                    video1.volume = value;
+//                    proLength = left;
+//                    playVoice.css('width',value * (progressVoice.get(0).offsetWidth)+ "px");
+//                    $(_this).css('left',value * (progressVoice.get(0).offsetWidth)+ "px");
+////                    console.log( playVoice.width())
+//                    console.log(proLength)
+//                    if(proLength == 0){
+//                        if($voiceImg.hasClass('noVoice')) return;
+//                        $voiceImg.removeClass('lowVoice').removeClass('highVoice').addClass('noVoice');
+//                    }else if(proLength == voiceLen){
+//                        if($voiceImg.hasClass('highVoice')) return;
+//                        $voiceImg.removeClass('noVoice').removeClass('lowVoice').addClass('highVoice');
+//                    }else{
+//                        if($voiceImg.hasClass('lowVoice')) return;
+//                        $voiceImg.removeClass('noVoice').removeClass('highVoice').addClass('lowVoice');
+//                    }
+//                }
+//            });
+
+        })
+
+        // 显示video的控制面板
+        function showControls(){
+            $('.duration').text(timeStamp(video1.duration))
+            videoControls.css('opacity',1);
+        }
+        // 隐藏video的控制面板
+        function hideControls(){
+            videoControls.get(0).style.opacity = 0;
+        }
+        // 控制video的播放
+        function playVideo(){
+            if ( video1.paused || video1.ended ){
+                console.log(2222)
+                if ( video1.ended ){
+                    console.log("end......")
+                    video1.currentTime = 0;
+                    return;
+                }
+                video1.play();
+                playBtn.removeClass('vjs-paused').addClass('vjs-playing');
+                progressFlag = setInterval(getProgress, 60);
+            }
+            else{
+                video1.pause();
+                playBtn.removeClass('vjs-playing').addClass('vjs-paused')
+                clearInterval(progressFlag);
+            }
+        }
+        // 控制video是否全屏，额这一部分没有实现好，以后有空我会接着研究一下
+        function IsfullScreen(){
+            if(fullScreenFlag){
+                exitFullscreen();
+            }
+            else{
+                fullScreen(video1);
+            }
+            fullScreenFlag = !fullScreenFlag;
+        }
+        function fullScreen(element) {
+            element.controls=false;
+            if(element.requestFullScreen) {
+                element.requestFullScreen();
+            } else if(element.webkitRequestFullScreen ) {
+                element.webkitRequestFullScreen();
+            } else if(element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+            }
+        }
+        function exitFullscreen() {
+            if(document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if(document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if(document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            }
+        }
+          // video的播放条
+        function getProgress(){
+            var percent = video1.currentTime / video1.duration;
+            playProgress.css('width',percent * (progressWrap.get(0).offsetWidth)+ "px");
+            $bt.css('left',percent * (progressWrap.get(0).offsetWidth)+ "px");
+            $('.curTime').html(timeStamp(video1.currentTime))
+            $('.countDown').html("-"+timeStamp(video1.duration-video1.currentTime))
+        }
+        // 鼠标在播放条上点击时进行捕获并进行处理
+        function videoSeek(e){
+            if(video1.paused || video1.ended){
+                playVideo();
+                enhanceVideoSeek(e);
+            }
+            else{
+                enhanceVideoSeek(e);
+            }
+        }
+        //鼠标拖拽圆圈按钮进行进度条处理
+
+        function enhanceVideoSeek(e){
+            clearInterval(progressFlag);
+            var length = e.touches[0].clientX  - progressWrap.get(0).offsetLeft;
+            var percent = length / progressWrap.get(0).offsetWidth;
+            playProgress.css('width',percent * (progressWrap.get(0).offsetWidth)+ "px");
+            video1.currentTime = percent * video1.duration;
+            progressFlag = setInterval(getProgress, 60);
+        }
+
+        function enhanceVoiceSeek(e){
+            var length = e.touches[0].clientX - progressVoice.get(0).offsetLeft;
+            if(length > progressVoice.get(0).offsetWidth){
+               length = progressVoice.get(0).offsetWidth;
+            }
+            var percent = length /progressVoice.get(0).offsetWidth;
+            playVoice.css('width',length+"px");
+            $circle.css('left',length+'px')
+            console.log(length)
+            console.log(percent)
+            video1.volume = percent;
+            if(percent == 0){
+                if($voiceImg.hasClass('noVoice')) return;
+                $voiceImg.removeClass('lowVoice').removeClass('highVoice').addClass('noVoice');
+            }else if(percent == 1){
+                if($voiceImg.hasClass('highVoice')) return;
+                $voiceImg.removeClass('noVoice').removeClass('lowVoice').addClass('highVoice');
+            }else{
+                if($voiceImg.hasClass('lowVoice')) return;
+                $voiceImg.removeClass('noVoice').removeClass('highVoice').addClass('lowVoice');
+            }
+        }
+        //分割时间函数
+        function timeStamp( second_time ){
+            var time1 = ((parseInt(second_time)/100)).toString();
+            var time2 = time1.split(".")[1]? (time1.split(".")[1].length == 1 ? time1.split(".")[1]+'0' : time1.split(".")[1]) :'00';
+            var time = 00+':' + time2;
+            if( parseInt(second_time )> 60){
+                var second = ((parseInt(second_time) % 60)/100).toString();
+                var min = (parseInt(second_time / 60)/100).toString();
+                var time3 = second.split(".")[1]? (second.split(".")[1].length == 1 ? second.split(".")[1]+'0' : second.split(".")[1]) :'00';
+                var time4 = min.split(".")[1]? (min.split(".")[1].length == 1 ? min.split(".")[1]+'0' : min.split(".")[1]) :'00';
+                time = time4 + ":" + time3;
+            }
+            return time;
+        }
+    }(this,document))
+</script>
+
+
+</body>
+</html>
+

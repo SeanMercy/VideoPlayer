@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <text layout="1">
+    <paragraph>
+      <sentences id="1">
+        <content><![CDATA[For him, everything is new, ]]></content>
+        <content_cn><![CDATA[]]></content_cn>
+        <netfiles>
+          <item netfile="net/0001.net" />
+        </netfiles>
+      </sentences>
+      <sentences id="2">
+        <content><![CDATA[and the best way to learn is to copy his mother. ]]></content>
+        <content_cn><![CDATA[]]></content_cn>
+        <netfiles>
+          <item netfile="net/0002.net" />
+        </netfiles>
+      </sentences>
+      <sentences id="3">
+        <content><![CDATA[Her heavy winter coat no longer needed, ]]></content>
+        <content_cn><![CDATA[]]></content_cn>
+        <netfiles>
+          <item netfile="net/0003.net" />
+        </netfiles>
+      </sentences>
+      <sentences id="4">
+        <content><![CDATA[she spins to shake it off, a dance celebrating the magic of spring. ]]></content>
+        <content_cn><![CDATA[]]></content_cn>
+        <netfiles>
+          <item netfile="net/0004.net" />
+        </netfiles>
+      </sentences>
+      <sentences id="5">
+        <content><![CDATA[Junior, best do what mom does. ]]></content>
+        <content_cn><![CDATA[]]></content_cn>
+        <netfiles>
+          <item netfile="net/0005.net" />
+        </netfiles>
+      </sentences>
+      <sentences id="6">
+        <content><![CDATA[A band of other mothers and their kids -- ]]></content>
+        <content_cn><![CDATA[]]></content_cn>
+        <netfiles>
+          <item netfile="net/0006.net" />
+        </netfiles>
+      </sentences>
+      <sentences id="7">
+        <content><![CDATA[it's like the first day of school ]]></content>
+        <content_cn><![CDATA[]]></content_cn>
+        <netfiles>
+          <item netfile="net/0007.net" />
+        </netfiles>
+      </sentences>
+      <sentences id="8">
+        <content><![CDATA[and his first glimpse of other goats like him. ]]></content>
+        <content_cn><![CDATA[]]></content_cn>
+        <netfiles>
+          <item netfile="net/0008.net" />
+        </netfiles>
+      </sentences>
+      <sentences id="9">
+        <content><![CDATA[The warming weather has released frozen streams. ]]></content>
+        <content_cn><![CDATA[]]></content_cn>
+        <netfiles>
+          <item netfile="net/0009.net" />
+        </netfiles>
+      </sentences>
+      <sentences id="10">
+        <content><![CDATA[His cousins can already leap up to five feet. ]]></content>
+        <content_cn><![CDATA[]]></content_cn>
+        <netfiles>
+          <item netfile="net/0010.net" />
+        </netfiles>
+      </sentences>
+      <sentences id="11">
+        <content><![CDATA[In a year, they'll all be able to jump double that. ]]></content>
+        <content_cn><![CDATA[]]></content_cn>
+        <netfiles>
+          <item netfile="net/0011.net" />
+        </netfiles>
+      </sentences>
+      <sentences id="12">
+        <content><![CDATA[Now it's his turn. ]]></content>
+        <content_cn><![CDATA[]]></content_cn>
+        <netfiles>
+          <item netfile="net/0012.net" />
+        </netfiles>
+      </sentences>
+      <sentences id="13">
+        <content><![CDATA[In a world full of obstacles, ]]></content>
+        <content_cn><![CDATA[]]></content_cn>
+        <netfiles>
+          <item netfile="net/0013.net" />
+        </netfiles>
+      </sentences>
+      <sentences id="14">
+        <content><![CDATA[knowing how to fly can get you a long way.]]></content>
+        <content_cn><![CDATA[]]></content_cn>
+        <netfiles>
+          <item netfile="net/0014.net" />
+        </netfiles>
+      </sentences>
+    </paragraph>
+  </text>
+  <modes>
+    <mode name="正常" mediafile="media/T11-ZC.mp3">
+      <sentences ref="1" starttime="0:01.809" endtime="0:05.000" />
+      <sentences ref="2" starttime="0:06.079" endtime="0:09.824" />
+      <sentences ref="3" starttime="0:11.157" endtime="0:14.255" />
+      <sentences ref="4" starttime="0:15.500" endtime="0:21.408" />
+      <sentences ref="5" starttime="0:22.500" endtime="0:25.733" />
+      <sentences ref="6" starttime="0:26.810" endtime="0:30.218" />
+      <sentences ref="7" starttime="0:31.000" endtime="0:34.000" />
+      <sentences ref="8" starttime="0:35.310" endtime="0:39.500" />
+      <sentences ref="9" starttime="0:41.000" endtime="0:44.500" />
+      <sentences ref="10" starttime="0:46.383" endtime="0:50.500" />
+      <sentences ref="11" starttime="0:51.500" endtime="0:55.000" />
+      <sentences ref="12" starttime="0:56.500" endtime="0:58.911" />
+      <sentences ref="13" starttime="0:59.500" endtime="1:03.000" />
+      <sentences ref="14" starttime="1:04.299" endtime="1:08.152" />
+    </mode>
+  </modes>
+</root>
